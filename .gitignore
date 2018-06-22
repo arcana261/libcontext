@@ -19,6 +19,7 @@
 *.gcov
 /m4/pkg.m4
 /INSTALL
+/*.la
 
 # object files
 *.o

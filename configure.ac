@@ -1,5 +1,6 @@
 AC_PREREQ([2.69])
-AC_INIT([libcontext], [0.1.0], [https://github.com/arcana261/libcontext/issues])
+AC_INIT([libcontext], [1.0.0], [https://github.com/arcana261/libcontext/issues])
+AC_SUBST([LIBVERSION], [1:0:0])
 
 # check file exists
 # AC_CONFIG_SRCDIR([src/hello.c])
@@ -12,6 +13,9 @@ AM_INIT_AUTOMAKE([1.14 -Wall -Werror foreign subdir-objects])
 AM_PROG_AR
 AC_PROG_CC
 AC_LANG([C])
+AX_COMPILER_CHECKS
+AX_CHECK_CFLAG_APPEND([-Werror])
+AX_CHECK_CFLAG_APPEND([-Wall])
 
 LT_INIT
 
@@ -31,6 +35,8 @@ AX_DPKG
 
 # resolve glib-2.0
 PKG_CHECK_MODULES([GLIB], [glib-2.0 >= 2.40])
+# resolve gobject-2.0
+PKG_CHECK_MODULES([GOBJECT], [gobject-2.0 >= 2.48])
 
 # outputs
 AC_CONFIG_HEADERS([config.h])
@@ -62,6 +68,12 @@ glib:
 	CPPFLAGS        : $GLIB_CPPFLAGS
 	CXXFLAGS        : $GLIB_CXXFLAGS
 	LIBS            : $GLIB_LIBS
+
+gobject:
+	CFLAGS          : $GOBJECT_CFLAGS
+	CPPFLAGS        : $GOBJECT_CPPFLAGS
+	CXXFLAGS        : $GOBJECT_CXXFLAGS
+	LIBS            : $GOBJECT_LIBS
 
 Development:
 	Linter                        : $CPPLINT
