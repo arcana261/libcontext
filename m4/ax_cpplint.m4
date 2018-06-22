@@ -1,0 +1,6 @@
+AC_DEFUN([AX_CPPLINT],
+[
+    AC_PATH_PROG([CPPLINT],[cpplint])
+    AC_SUBST([CPPLINT])
+    AM_CONDITIONAL([HAVE_CPPLINT], [test x$CPPLINT != x])
+])
