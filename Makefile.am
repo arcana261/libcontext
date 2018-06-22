@@ -19,13 +19,13 @@ lib_LTLIBRARIES = libcontext-1.la
 
 # libcontext-1.la
 libcontext_1_la_SOURCES = \
-	src/context/map.h \
-	src/context/map.c \
+	src/context/valuemap.h \
+	src/context/valuemap.c \
 	src/context/error.h
 libcontext_1_la_LDFLAGS = -versioninfo $(LIBVERSION)
 
 # installation header files
 include_HEADERS = \
-	src/context/map.h \
+	src/context/valuemap.h \
 	src/context/error.h
 

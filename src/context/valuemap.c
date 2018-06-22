@@ -1,6 +1,6 @@
 #include <glib-object.h>
 
-#include "map.h"
+#include "valuemap.h"
 #include "error.h"
 
 GValue* _valuemap_lookup(ValueMap* v, const gchar* key);
