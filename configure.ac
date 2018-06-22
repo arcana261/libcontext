@@ -1,5 +1,5 @@
 AC_PREREQ([2.69])
-AC_INIT([sample_app], [0.1.0], [https://github.com/arcana261/libcontext/issues])
+AC_INIT([libcontext], [0.1.0], [https://github.com/arcana261/libcontext/issues])
 
 # check file exists
 # AC_CONFIG_SRCDIR([src/hello.c])
