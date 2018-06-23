@@ -18,7 +18,22 @@ ValueMap* valuemap_new() {
   return result;
 }
 
-void valuemap_destroy(ValueMap* v) {}
+void valuemap_destroy(ValueMap* v) {
+  GHashTableIter iter;
+  gpointer key, value;
+
+  g_hash_table_iter_init(&iter, v->table);
+  while (g_hash_table_iter_next(&iter, &key, &value)) {
+    g_hash_table_iter_remove(&iter);
+
+    g_value_unset((GValue*)value);
+    g_free(value);
+    g_free(key);
+  }
+
+  g_hash_table_destroy(v->table);
+  g_free(v);
+}
 
 gboolean valuemap_contains(ValueMap* m, const gchar* key) {
   return _valuemap_lookup_or_null(m, key) != NULL;
@@ -74,9 +89,54 @@ gint valuemap_get_int(ValueMap* m, const gchar* key, GError** err) {
 }
 
 gboolean valuemap_is_int(ValueMap* m, const gchar* key) {
-  GError* err;
+  GError* err = NULL;
 
   _valuemap_lookup_typed(m, key, G_TYPE_INT, &err);
+
+  if (err != NULL) {
+    g_error_free(err);
+    return FALSE;
+  }
+
+  return TRUE;
+}
+
+void valuemap_set_string(ValueMap* m, const gchar* key, const gchar* value) {
+  GValue* g_value;
+
+  g_value = _valuemap_lookup_or_create(m, key, G_TYPE_STRING);
+  if (G_VALUE_TYPE(g_value) == G_TYPE_STRING) {
+    g_value_set_string(g_value, value);
+  } else {
+    g_value_unset(g_value);
+    g_value_init(g_value, G_TYPE_STRING);
+    g_value_set_string(g_value, value);
+  }
+}
+
+const gchar* valuemap_get_string(ValueMap* m, const gchar* key, GError** err) {
+  GValue* value;
+  GValue new_value = G_VALUE_INIT;
+
+  g_return_val_if_fail(err == NULL || *err == NULL, 0);
+
+  value = _valuemap_lookup_typed(m, key, G_TYPE_STRING, err);
+  g_return_val_if_fail(err == NULL || *err == NULL, 0);
+  g_assert_nonnull(value);
+
+  if (G_VALUE_TYPE(value) == G_TYPE_STRING) {
+    return g_value_get_string(value);
+  } else {
+    g_value_init(&new_value, G_TYPE_STRING);
+    g_value_transform(value, &new_value);
+    return g_value_get_string(&new_value);
+  }
+}
+
+gboolean valuemap_is_string(ValueMap* m, const gchar* key) {
+  GError* err = NULL;
+
+  _valuemap_lookup_typed(m, key, G_TYPE_STRING, &err);
 
   if (err != NULL) {
     g_error_free(err);
