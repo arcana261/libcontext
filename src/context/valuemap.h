@@ -10,7 +10,10 @@ typedef struct {
 ValueMap*   valuemap_new();
 void        valuemap_destroy(ValueMap* v);
 
-void        valuemap_set_int(ValueMap* m, const gchar* key, gint value, GError **err);
+gboolean    valuemap_contains(ValueMap* m, const gchar* key);
+gboolean    valuemap_unset(ValueMap* m, const gchar* key);
+
+void        valuemap_set_int(ValueMap* m, const gchar* key, gint value);
 gint        valuemap_get_int(ValueMap* m, const gchar* key, GError **err);
 
 #endif
