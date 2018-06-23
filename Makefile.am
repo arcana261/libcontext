@@ -29,3 +29,5 @@ include_HEADERS = \
 	src/context/valuemap.h \
 	src/context/error.h
 
+# makefile includes
+include make/cpplint.am

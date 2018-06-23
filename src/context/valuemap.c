@@ -1,7 +1,7 @@
 #include <glib-object.h>
 
-#include "valuemap.h"
-#include "error.h"
+#include "context/valuemap.h"
+#include "context/error.h"
 
 GValue* _valuemap_lookup_or_null(ValueMap* v, const gchar* key);
 GValue* _valuemap_lookup_or_fail(ValueMap* v, const gchar* key, GError **err);
@@ -10,7 +10,7 @@ GValue* _valuemap_lookup_typed(ValueMap* v, const gchar* key, GType g_type, GErr
 
 ValueMap* valuemap_new() {
     ValueMap* result;
-    
+
     result = g_new(ValueMap, 1);
     result->table = g_hash_table_new(g_str_hash, g_str_equal);
 
@@ -18,7 +18,6 @@ ValueMap* valuemap_new() {
 }
 
 void valuemap_destroy(ValueMap* v) {
-
 }
 
 gboolean valuemap_contains(ValueMap* m, const gchar* key) {
@@ -120,7 +119,7 @@ GValue* _valuemap_lookup_or_create(ValueMap* v, const gchar* key, GType g_type) 
         value = g_new0(GValue, 1);
         g_value_init(value, g_type);
         g_hash_table_insert(v->table, g_strdup(key), value);
-    } 
+    }
 
     return value;
 }

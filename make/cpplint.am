@@ -1,0 +1,7 @@
+# check code style via cpplint
+# see AX_CPPLINT
+if HAVE_CPPLINT
+.PHONY: lint
+lint:
+	find $(top_srcdir)/src -type f -name "*.cc" -or -name "*.c" -or -name "*.cpp" -or -name "*.cu" -or -name "*.cuh" -or -name "*.h" -or -name "*.hpp" | xargs $(CPPLINT) --counting=detailed
+endif

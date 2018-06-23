@@ -1,5 +1,5 @@
-#ifndef _CONTEXT_ERROR_H__
-#define _CONTEXT_ERROR_H__
+#ifndef CONTEXT_ERROR_H_
+#define CONTEXT_ERROR_H_
 
 #include <glib.h>
 
@@ -7,4 +7,4 @@
 #define CONTEXT_ERROR_INVALID_TYPE      1
 #define CONTEXT_ERROR_KEY_NOT_FOUND     1
 
-#endif
+#endif  // CONTEXT_ERROR_H_

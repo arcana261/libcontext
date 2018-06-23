@@ -1,5 +1,5 @@
-#ifndef _CONTEXT_MAP_H__
-#define _CONTEXT_MAP_H__
+#ifndef CONTEXT_VALUEMAP_H_
+#define CONTEXT_VALUEMAP_H_
 
 #include <glib.h>
 
@@ -17,4 +17,4 @@ void        valuemap_set_int(ValueMap* m, const gchar* key, gint value);
 gint        valuemap_get_int(ValueMap* m, const gchar* key, GError **err);
 gboolean    valuemap_is_int(ValueMap* m, const gchar* key);
 
-#endif
+#endif  // CONTEXT_VALUEMAP_H_
