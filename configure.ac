@@ -80,6 +80,7 @@ gobject:
 
 Development:
 	Linter                        : $CPPLINT
+  Code Formatter                : $CLANG_FORMAT
 	Leak Sanitizer Checking       : $SANITY_LEAK
 	Address Sanitizer Checking    : $SANITY_ADDRESS
 	Undefined Sanitizer Checking  : $SANITY_UNDEFINED
