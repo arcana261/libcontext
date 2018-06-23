@@ -31,3 +31,4 @@ include_HEADERS = \
 
 # makefile includes
 include make/cpplint.am
+include make/format.am

@@ -24,6 +24,9 @@ AC_PROG_INSTALL
 # check availability of cpplint
 AX_CPPLINT
 
+# check availability of clang-format to format code
+AX_CLANG_FORMAT
+
 # check support for required compiler flags for sanity checkings
 AX_SANITIZER
 

@@ -1,0 +1,8 @@
+AC_DEFUN([AX_CLANG_FORMAT],
+[
+    AC_PATH_PROG([CLANG_FORMAT],[clang-format])
+    AC_PATH_PROG([XARGS],[xargs])
+    AC_SUBST([CLANG_FORMAT])
+    AC_SUBST([XARGS])
+    AM_CONDITIONAL([HAVE_CLANG_FORMAT], [test x$CPPLINT != x -a x$XARGS != x])
+])
