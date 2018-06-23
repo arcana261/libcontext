@@ -1,0 +1,6 @@
+AC_DEFUN([AX_UNITTEST],
+[
+    AC_PATH_PROG([XARGS],[xargs])
+    AC_SUBST([XARGS])
+    AM_CONDITIONAL([HAVE_UNITTEST], [test x$XARGS != x])
+])

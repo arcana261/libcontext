@@ -1,0 +1,29 @@
+# run all sanitizers
+sanity: sanity-leak sanity-address sanity-undefined sanity-thread sanity-memory
+
+# sanitizer specs
+sanity-leak:
+if HAVE_LEAK_SANITIZER
+	$(MAKE) $(AM_MAKEFLAGS) clean
+	$(MAKE) $(AM_MAKEFLAGS) CFLAGS="$(CFLAGS) -fsanitize=leak -O0" CXXFLAGS="$(CXXFLAGS) -fsanitize=leak" check
+endif
+sanity-address:
+if HAVE_ADDRESS_SANITIZER
+	$(MAKE) $(AM_MAKEFLAGS) clean
+	$(MAKE) $(AM_MAKEFLAGS) CFLAGS="$(CFLAGS) -fsanitize=address -O0" CXXFLAGS="$(CXXFLAGS) -fsanitize=address" check
+endif
+sanity-undefined:
+if HAVE_UNDEFINED_SANITIZER
+	$(MAKE) $(AM_MAKEFLAGS) clean
+	$(MAKE) $(AM_MAKEFLAGS) CFLAGS="$(CFLAGS) -fsanitize=undefined -O0" CXXFLAGS="$(CXXFLAGS) -fsanitize=undefined" check
+endif
+sanity-thread:
+if HAVE_THREAD_SANITIZER
+	$(MAKE) $(AM_MAKEFLAGS) clean
+	$(MAKE) $(AM_MAKEFLAGS) CFLAGS="$(CFLAGS) -fsanitize=thread -O0" CXXFLAGS="$(CXXFLAGS) -fsanitize=thread" LDFLAGS="$(LDFLAGS) -shared" check
+endif
+sanity-memory:
+if HAVE_MEMORY_SANITIZER
+	$(MAKE) $(AM_MAKEFLAGS) clean
+	$(MAKE) $(AM_MAKEFLAGS) CFLAGS="$(CFLAGS) -fsanitize=memory -O0" CXXFLAGS="$(CXXFLAGS) -fsanitize=memory" check
+endif

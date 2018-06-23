@@ -1,0 +1,15 @@
+# run tests!
+if HAVE_UNITTEST
+
+.PHONY: unittest
+# NOTE: check ensures check_PROGRAMS are built
+# before calling check-local which calls unittest
+#echo "$(check_PROGRAMS)" | xargs
+unittest:
+	@echo -e "\e[32m"
+	@for test_prg in `echo "$(check_PROGRAMS)"`; do $(top_srcdir)/$$test_prg; done
+	@echo -e "\e[0m"
+
+check-local: unittest
+
+endif

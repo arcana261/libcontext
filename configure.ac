@@ -27,6 +27,9 @@ AX_CPPLINT
 # check availability of clang-format to format code
 AX_CLANG_FORMAT
 
+# check if we can perform unit tests
+AX_UNITTEST
+
 # check support for required compiler flags for sanity checkings
 AX_SANITIZER
 
@@ -80,6 +83,7 @@ gobject:
 
 Development:
 	Linter                        : $CPPLINT
+  xargs                         : $XARGS
   Code Formatter                : $CLANG_FORMAT
 	Leak Sanitizer Checking       : $SANITY_LEAK
 	Address Sanitizer Checking    : $SANITY_ADDRESS
