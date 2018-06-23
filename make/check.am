@@ -7,7 +7,7 @@ if HAVE_UNITTEST
 #echo "$(check_PROGRAMS)" | xargs
 unittest:
 	@echo -e "\e[32m"
-	@for test_prg in `echo "$(check_PROGRAMS)"`; do $(top_srcdir)/$$test_prg; done
+	@for test_prg in `echo "$(check_PROGRAMS)"`; do $(top_builddir)/$$test_prg; done
 	@echo -e "\e[0m"
 
 check-local: unittest
