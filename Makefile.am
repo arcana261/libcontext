@@ -38,7 +38,7 @@ test_context_valuemap_test_SOURCES = test/context/valuemap_test.c
 test_context_valuemap_test_LDADD = $(lib_LTLIBRARIES)
 
 # makefile includes
-include make/cpplint.am
+include make/lint.am
 include make/format.am
 include make/check.am
 include make/sanity.am
