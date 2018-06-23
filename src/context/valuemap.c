@@ -74,6 +74,19 @@ gint valuemap_get_int(ValueMap* m, const gchar* key, GError **err) {
     }
 }
 
+gboolean valuemap_is_int(ValueMap* m, const gchar* key) {
+    GError *err;
+
+    _valuemap_lookup_typed(m, key, G_TYPE_INT, &err);
+
+    if (err != NULL) {
+        g_error_free(err);
+        return FALSE;
+    }
+
+    return TRUE;
+}
+
 GValue* _valuemap_lookup_typed(ValueMap* v, const gchar* key, GType g_type, GError **err) {
     GValue* value;
 
