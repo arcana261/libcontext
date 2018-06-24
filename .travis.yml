@@ -1,0 +1,45 @@
+language: c
+dist: trusty
+sudo: required
+
+stages:
+  - lint
+  - test
+  - sanity
+  - coverage
+
+jobs:
+  include:
+    - stage: lint
+      compiler: gcc
+      before_install: pip install --user cpplint
+      script:
+        - ./autogen.sh
+        - ./configure
+        - make lint
+    - stage: test
+      compiler:
+        - gcc
+        - clang
+      script:
+        - ./autogen.sh
+        - ./configure
+        - make check
+    - stage: sanity
+      compiler: gcc
+      script:
+        - ./autogen.sh
+        - ./configure
+        - make sanity
+    - stage: coverage
+      compiler: gcc
+      before_install:
+        - pip install --user cpp-coveralls
+        - sudo apt-get install -y lcov
+        - gem install coveralls-lcov
+      script:
+        - ./autogen.sh
+        - ./configure
+        - make coverage
+      after_success:
+        - coveralls-lcov --repo-token ${COVERALLS_REPO_TOKEN} coverage.info
