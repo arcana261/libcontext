@@ -56,6 +56,54 @@ pkg-config --cflags gobject-2.0
 }
 ```
 
+## Debugging in Visual Studio Code
+
+Executables forged by autotools toolchain use `libtool` to create a wrapper shell
+script with links and runs the programms. This is fine until we want to use GDB debugger.
+In that case we need to manually run linked program in `.libs` folder with custom
+`LD_LIBRARY_PATH` provided.
+
+**First** Identify which test/tests you wish to debug. As an example, for `valuemap_test`
+use `test/context/valuemap_test -l` to identify available tests, and
+`test/context/valuemap_test -p <test_path>` to run a specific test.
+
+**Second** Fill `.vscode/launch.json` with appropriate values to be used for debugger.
+Listing below shows an example setup in which we try to debug a specific test using
+provided `args` configuration.
+
+```json
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "valuemap_test",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/test/context/.libs/valuemap_test",
+            "args": ["-p", "/valuemap/numeric_string_should_transform_to_int"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [{
+                "name": "LD_LIBRARY_PATH",
+                "value": "$LD_LIBRARY_PATH:${workspaceRoot}/.libs"
+            }],
+            "externalConsole": true,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        }
+    ]
+}
+```
+
 ## Code of Conduct
 
 ### Our Pledge
