@@ -43,3 +43,4 @@ include make/format.am
 include make/check.am
 include make/sanity.am
 include make/coverage.am
+include make/phony.am

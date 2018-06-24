@@ -1,7 +1,6 @@
 # autoformat code
 # see AX_CLANG_FORMAT
 if HAVE_CLANG_FORMAT
-.PHONY: format
 format:
 	$(TOOL_FIND) $(top_srcdir)/src $(top_srcdir)/test -type f -name "*.cc" -or -name "*.c" -or -name "*.cpp" -or -name "*.cu" -or -name "*.cuh" -or -name "*.h" -or -name "*.hpp" | $(XARGS) $(CLANG_FORMAT) -style=Google -i
 endif

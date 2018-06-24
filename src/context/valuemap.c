@@ -6,8 +6,8 @@
 GValue* _valuemap_lookup_or_null(ValueMap* v, const gchar* key);
 GValue* _valuemap_lookup_or_fail(ValueMap* v, const gchar* key, GError** err);
 GValue* _valuemap_lookup_or_create(ValueMap* v, const gchar* key, GType g_type);
-GValue* _valuemap_lookup_typed(ValueMap* v, const gchar* key, GType g_type,
-                               GError** err);
+GValue* _valuemap_lookup_sametype(ValueMap* v, const gchar* key, GType g_type,
+                                  GError** err);
 
 ValueMap* valuemap_new() {
   ValueMap* result;
@@ -56,6 +56,19 @@ gboolean valuemap_unset(ValueMap* m, const gchar* key) {
   }
 }
 
+GType valuemap_get_type(ValueMap* m, const gchar* key, GError** err) {
+  GValue* value;
+
+  g_return_val_if_fail(err == NULL || *err == NULL, 0);
+
+  value = _valuemap_lookup_or_fail(m, key, err);
+  if (err != NULL && *err != NULL) {
+    return G_TYPE_INT;
+  }
+
+  return G_VALUE_TYPE(value);
+}
+
 void valuemap_set_int(ValueMap* m, const gchar* key, gint value) {
   GValue* g_value;
 
@@ -71,34 +84,15 @@ void valuemap_set_int(ValueMap* m, const gchar* key, gint value) {
 
 gint valuemap_get_int(ValueMap* m, const gchar* key, GError** err) {
   GValue* value;
-  GValue new_value = G_VALUE_INIT;
 
   g_return_val_if_fail(err == NULL || *err == NULL, 0);
 
-  value = _valuemap_lookup_typed(m, key, G_TYPE_INT, err);
-  g_return_val_if_fail(err == NULL || *err == NULL, 0);
-  g_assert_nonnull(value);
-
-  if (G_VALUE_TYPE(value) == G_TYPE_INT) {
-    return g_value_get_int(value);
-  } else {
-    g_value_init(&new_value, G_TYPE_INT);
-    g_value_transform(value, &new_value);
-    return g_value_get_int(&new_value);
-  }
-}
-
-gboolean valuemap_is_int(ValueMap* m, const gchar* key) {
-  GError* err = NULL;
-
-  _valuemap_lookup_typed(m, key, G_TYPE_INT, &err);
-
-  if (err != NULL) {
-    g_error_free(err);
-    return FALSE;
+  value = _valuemap_lookup_sametype(m, key, G_TYPE_INT, err);
+  if (err != NULL && *err != NULL) {
+    return 0;
   }
 
-  return TRUE;
+  return g_value_get_int(value);
 }
 
 void valuemap_set_string(ValueMap* m, const gchar* key, const gchar* value) {
@@ -116,51 +110,33 @@ void valuemap_set_string(ValueMap* m, const gchar* key, const gchar* value) {
 
 const gchar* valuemap_get_string(ValueMap* m, const gchar* key, GError** err) {
   GValue* value;
-  GValue new_value = G_VALUE_INIT;
 
   g_return_val_if_fail(err == NULL || *err == NULL, 0);
 
-  value = _valuemap_lookup_typed(m, key, G_TYPE_STRING, err);
-  g_return_val_if_fail(err == NULL || *err == NULL, 0);
-  g_assert_nonnull(value);
-
-  if (G_VALUE_TYPE(value) == G_TYPE_STRING) {
-    return g_value_get_string(value);
-  } else {
-    g_value_init(&new_value, G_TYPE_STRING);
-    g_value_transform(value, &new_value);
-    return g_value_get_string(&new_value);
-  }
-}
-
-gboolean valuemap_is_string(ValueMap* m, const gchar* key) {
-  GError* err = NULL;
-
-  _valuemap_lookup_typed(m, key, G_TYPE_STRING, &err);
-
-  if (err != NULL) {
-    g_error_free(err);
-    return FALSE;
+  value = _valuemap_lookup_sametype(m, key, G_TYPE_STRING, err);
+  if (err != NULL && *err != NULL) {
+    return NULL;
   }
 
-  return TRUE;
+  return g_value_get_string(value);
 }
 
-GValue* _valuemap_lookup_typed(ValueMap* v, const gchar* key, GType g_type,
-                               GError** err) {
+GValue* _valuemap_lookup_sametype(ValueMap* v, const gchar* key, GType g_type,
+                                  GError** err) {
   GValue* value;
 
   g_return_val_if_fail(err == NULL || *err == NULL, NULL);
 
   value = _valuemap_lookup_or_fail(v, key, err);
-  g_return_val_if_fail(err == NULL || *err == NULL, NULL);
-  g_assert_nonnull(value);
+  if (err != NULL && *err != NULL) {
+    return NULL;
+  }
 
-  if (!g_value_type_transformable(G_VALUE_TYPE(value), g_type)) {
+  if (G_VALUE_TYPE(value) != g_type) {
     g_set_error(err, CONTEXT_ERROR, CONTEXT_ERROR_INVALID_TYPE,
-                "[%s:%d] can not convert value from type %s to %s", __FILE__,
-                __LINE__, g_type_name(G_VALUE_TYPE(value)),
-                g_type_name(g_type));
+                "[%s:%d] for key '%s' requested type '%s' but has '%s'",
+                __FILE__, __LINE__, key, g_type_name(g_type),
+                g_type_name(G_VALUE_TYPE(value)));
 
     return NULL;
   }

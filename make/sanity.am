@@ -1,5 +1,8 @@
 # run all sanitizers
 sanity: | sanity-undefined sanity-address  sanity-leak sanity-thread sanity-memory
+	@echo -e "\e[31mCleaningup...\e[0m"
+	$(MAKE) $(AM_MAKEFLAGS) clean
+	@echo -e "\e[31mDone!\e[0m"
 
 # sanitizer specs
 sanity-leak:

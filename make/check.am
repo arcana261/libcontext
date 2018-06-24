@@ -1,7 +1,6 @@
 # run tests!
 if HAVE_UNITTEST
 
-.PHONY: unittest
 # NOTE: check ensures check_PROGRAMS are built
 # before calling check-local which calls unittest
 #echo "$(check_PROGRAMS)" | xargs
