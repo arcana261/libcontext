@@ -8,8 +8,6 @@ AC_DEFUN([AX_SANITIZER],
         AX_CHECK_LINK_FLAG(-pie, [SANITY_THREAD=true], [SANITY_THREAD=false])
     ], [SANITY_THREAD=false])
 
-    # gcc: error: -fsanitize=thread linking must be done with -pie or -shared
-
     AM_CONDITIONAL([HAVE_LEAK_SANITIZER], [test x$SANITY_LEAK = xtrue])
     AM_CONDITIONAL([HAVE_ADDRESS_SANITIZER], [test x$SANITY_ADDRESS = xtrue])
     AM_CONDITIONAL([HAVE_UNDEFINED_SANITIZER], [test x$SANITY_UNDEFINED = xtrue])
