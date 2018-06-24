@@ -27,7 +27,7 @@ sanity-thread:
 if HAVE_THREAD_SANITIZER
 	@echo -e "\e[31mRunning thread sanitizer...\e[0m"
 	$(MAKE) $(AM_MAKEFLAGS) clean
-	$(MAKE) $(AM_MAKEFLAGS) CFLAGS="$(CFLAGS) -fsanitize=thread -O0" CXXFLAGS="$(CXXFLAGS) -fsanitize=thread" LDFLAGS="$(LDFLAGS) -shared" check
+	$(MAKE) $(AM_MAKEFLAGS) CFLAGS="$(CFLAGS) -fsanitize=thread -O0" CXXFLAGS="$(CXXFLAGS) -fsanitize=thread -pie" LDFLAGS="$(LDFLAGS) -shared" check
 endif
 sanity-memory:
 if HAVE_MEMORY_SANITIZER
