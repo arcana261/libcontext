@@ -18,9 +18,13 @@ jobs:
         - ./configure
         - make lint
     - stage: test
-      compiler:
-        - gcc
-        - clang
+      compiler: gcc
+      script:
+        - ./autogen.sh
+        - ./configure
+        - make check
+    - stage: test
+      compiler: clang
       script:
         - ./autogen.sh
         - ./configure
