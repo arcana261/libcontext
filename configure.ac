@@ -42,7 +42,7 @@ AX_DPKG
 # resolve glib-2.0
 PKG_CHECK_MODULES([GLIB], [glib-2.0 >= 2.40])
 # resolve gobject-2.0
-PKG_CHECK_MODULES([GOBJECT], [gobject-2.0 >= 2.48])
+PKG_CHECK_MODULES([GOBJECT], [gobject-2.0 >= 2.40])
 
 # outputs
 AC_CONFIG_HEADERS([config.h])
