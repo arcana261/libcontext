@@ -18,4 +18,7 @@ gint valuemap_get_int(ValueMap* m, const gchar* key, GError** err);
 void valuemap_set_string(ValueMap* m, const gchar* key, const gchar* value);
 const gchar* valuemap_get_string(ValueMap* m, const gchar* key, GError** err);
 
+void valuemap_set_boolean(ValueMap* m, const gchar* key, gboolean value);
+gboolean valuemap_get_boolean(ValueMap* m, const gchar* key, GError** err);
+
 #endif  // CONTEXT_VALUEMAP_H_

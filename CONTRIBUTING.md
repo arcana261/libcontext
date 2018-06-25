@@ -16,6 +16,27 @@ Please note we have a code of conduct, please follow it in all your interactions
 4. You may merge the Pull Request in once you have the sign-off of two other developers, or if you 
    do not have permission to do that, you may request the second reviewer to merge it for you.
 
+## Code Style
+
+We use Google's code style convention and provide two accompanying tools in order to
+lint code against Google's and also to re-format code based on Google's.
+
+### Running Linter
+
+Linter requires `cpplint` to run, so make sure you have `python` and `cpplint` installed.
+cpplint can be installed by issueing following command:
+
+```bash
+pip install --user cpplint
+```
+
+If you have cpplint installed, you can issue linter by running following command:
+
+```bash
+make lint
+```
+
+
 ## Setting up Visual Studio Code
 
 In case you wish to use visual studio code, you have to first setup includedirs for intellisense

@@ -69,6 +69,32 @@ GType valuemap_get_type(ValueMap* m, const gchar* key, GError** err) {
   return G_VALUE_TYPE(value);
 }
 
+void valuemap_set_boolean(ValueMap* m, const gchar* key, gboolean value) {
+  GValue* g_value;
+
+  g_value = _valuemap_lookup_or_create(m, key, G_TYPE_BOOLEAN);
+  if (G_VALUE_TYPE(g_value) == G_TYPE_BOOLEAN) {
+    g_value_set_boolean(g_value, value);
+  } else {
+    g_value_unset(g_value);
+    g_value_init(g_value, G_TYPE_BOOLEAN);
+    g_value_set_boolean(g_value, value);
+  }
+}
+
+gboolean valuemap_get_boolean(ValueMap* m, const gchar* key, GError** err) {
+  GValue* value;
+
+  g_return_val_if_fail(err == NULL || *err == NULL, FALSE);
+
+  value = _valuemap_lookup_sametype(m, key, G_TYPE_BOOLEAN, err);
+  if (err != NULL && *err != NULL) {
+    return FALSE;
+  }
+
+  return g_value_get_boolean(value);
+}
+
 void valuemap_set_int(ValueMap* m, const gchar* key, gint value) {
   GValue* g_value;
 

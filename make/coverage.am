@@ -31,7 +31,7 @@ clean-coverage:
 	find $(top_builddir) -name *.gcda -exec rm -f {} +
 	find $(top_builddir) -name *.gcno -exec rm -f {} +
 	find $(top_builddir) -name *.gcov -exec rm -f {} +
-	rm -f $(top_builddir)/coverage.info
+	if [ x${CLEAN_COVERAGE_ON_CLEAN} != xno ]; then rm -f $(top_builddir)/coverage.info; fi
 	if [ x${CLEAN_COVERAGE_ON_CLEAN} != xno ]; then rm -rfv $(top_builddir)/coverage; fi
 
 clean-local: clean-coverage
