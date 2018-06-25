@@ -156,6 +156,19 @@ void test_string_override(void) {
   valuemap_destroy(v);
 }
 
+void test_string_should_fail_for_nonexisting_key(void) {
+  ValueMap* v;
+  GError* err = NULL;
+
+  v = valuemap_new();
+  g_assert_nonnull(v);
+
+  valuemap_get_string(v, "some-key", &err);
+  g_assert_error(err, CONTEXT_ERROR, CONTEXT_ERROR_KEY_NOT_FOUND);
+
+  valuemap_destroy(v);
+}
+
 void test_string_ownership(void) {
   ValueMap* v;
   const gchar* result;
@@ -223,7 +236,7 @@ void test_get_type_should_return_error_nonexisting_key(void) {
 
 void test_boolean(void) {
   ValueMap* v;
-  GError *err = NULL;
+  GError* err = NULL;
   gboolean result;
 
   v = valuemap_new();
@@ -233,6 +246,63 @@ void test_boolean(void) {
   result = valuemap_get_boolean(v, "some-key", &err);
   g_assert_no_error(err);
   g_assert_cmpint(result, ==, TRUE);
+
+  valuemap_destroy(v);
+}
+
+void test_set_boolean_override(void) {
+  ValueMap* v;
+  GError* err = NULL;
+  gboolean result;
+
+  v = valuemap_new();
+  g_assert_nonnull(v);
+
+  valuemap_set_string(v, "some-key", "some-value");
+  valuemap_set_boolean(v, "some-key", TRUE);
+  result = valuemap_get_boolean(v, "some-key", &err);
+  g_assert_no_error(err);
+  g_assert_cmpint(result, ==, TRUE);
+
+  valuemap_destroy(v);
+}
+
+void test_set_boolean_should_fail_for_nonexisting_key(void) {
+  ValueMap* v;
+  GError* err = NULL;
+
+  v = valuemap_new();
+  g_assert_nonnull(v);
+
+  valuemap_get_boolean(v, "some-key", &err);
+  g_assert_error(err, CONTEXT_ERROR, CONTEXT_ERROR_KEY_NOT_FOUND);
+
+  valuemap_destroy(v);
+}
+
+void test_get_int_should_fail_for_nonexisting_key(void) {
+  ValueMap* v;
+  GError* err = NULL;
+
+  v = valuemap_new();
+  g_assert_nonnull(v);
+
+  valuemap_get_int(v, "some-key", &err);
+  g_assert_error(err, CONTEXT_ERROR, CONTEXT_ERROR_KEY_NOT_FOUND);
+
+  valuemap_destroy(v);
+}
+
+void test_get_int_should_fail_for_incompatible_type(void) {
+  ValueMap* v;
+  GError* err = NULL;
+
+  v = valuemap_new();
+  g_assert_nonnull(v);
+
+  valuemap_set_string(v, "some-key", "some-value");
+  valuemap_get_int(v, "some-key", &err);
+  g_assert_error(err, CONTEXT_ERROR, CONTEXT_ERROR_INVALID_TYPE);
 
   valuemap_destroy(v);
 }
@@ -249,10 +319,20 @@ int main(int argc, char* argv[]) {
   g_test_add_func("/valuemap/unset_nonexisting", test_unset_existing);
   g_test_add_func("/valuemap/int", test_int);
   g_test_add_func("/valuemap/int/override", test_int_override);
+  g_test_add_func("/valuemap/int/should_return_error_for_nonexisting_key",
+                  test_get_int_should_fail_for_nonexisting_key);
+  g_test_add_func("/valuemap/int/should_fail_for_incompatible_type",
+                  test_get_int_should_fail_for_incompatible_type);
   g_test_add_func("/valuemap/string", test_string);
   g_test_add_func("/valuemap/string/override", test_string_override);
   g_test_add_func("/valuemap/string_ownership", test_string);
+  g_test_add_func("/valuemap/string/should_fail_for_nonexisting_key",
+                  test_string_should_fail_for_nonexisting_key);
   g_test_add_func("/valuemap/boolean", test_boolean);
+  g_test_add_func(
+      "/valuemap/boolean/set_boolean_should_fail_for_nonexisting_key",
+      test_set_boolean_should_fail_for_nonexisting_key);
+  g_test_add_func("/valuemap/string/set_override", test_set_boolean_override);
 
   g_test_add_func("/valuemap/get_type/int", test_get_type_int);
   g_test_add_func("/valuemap/get_type/string", test_get_type_string);
