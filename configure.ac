@@ -48,7 +48,7 @@ PKG_CHECK_MODULES([GOBJECT], [gobject-2.0 >= 2.40])
 # outputs
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([Makefile])
-#AC_CONFIG_FILES([whine.pc])
+AC_CONFIG_FILES([libcontext.pc])
 
 # generate all files
 AC_OUTPUT

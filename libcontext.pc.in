@@ -1,0 +1,11 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: @PACKAGE_NAME@
+Description: context akin to glang's context objects!
+Version: @PACKAGE_VERSION@
+Requires: glib-2.0 >= 2.40, gobject-2.0 >= 2.40
+Cflags: -I${includedir}
+Libs: -L${libdir} -lcontext-1

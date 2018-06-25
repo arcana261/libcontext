@@ -4,7 +4,9 @@ AM_CFLAGS =
 AM_LDFLAGS = 
 
 EXTRA_DIST = \
-	autogen.sh
+	autogen.sh \
+	CPPLINT.cfg \
+	libcontext.pc
 
 # include glib as dependency
 AM_CFLAGS += $(GLIB_CFLAGS)
@@ -28,6 +30,10 @@ libcontext_1_la_LDFLAGS = $(AM_LDFLAGS) -versioninfo $(LIBVERSION)
 include_HEADERS = \
 	src/context/valuemap.h \
 	src/context/error.h
+
+# installation pkgconfig files
+pkgconfiglibdir = $(libdir)/pkgconfig
+pkgconfiglib_DATA = libcontext.pc
 
 # tests
 check_PROGRAMS = \
