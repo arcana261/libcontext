@@ -3,3 +3,9 @@
 
 # libcontext
 context akin to glang's context objects!
+
+# building 
+
+```bash
+apt-get install libglib2.0-dev
+```
