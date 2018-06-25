@@ -45,6 +45,9 @@ PKG_CHECK_MODULES([GLIB], [glib-2.0 >= 2.40])
 # resolve gobject-2.0
 PKG_CHECK_MODULES([GOBJECT], [gobject-2.0 >= 2.40])
 
+# set output headerfile includedir
+AC_SUBST([includedir], [$includedir/context])
+
 # outputs
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([Makefile])
