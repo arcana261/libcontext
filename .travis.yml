@@ -11,12 +11,15 @@ stages:
 jobs:
   include:
     - stage: lint
-      compiler: gcc
-      before_install: pip install --user cpplint
+      compiler: clang
+      before_install:
+        - pip install --user cpplint
+        - apt-get install -y clang-format
       script:
         - ./autogen.sh
         - ./configure
         - make lint
+        - make checkformat
     - stage: test
       compiler: gcc
       script:
