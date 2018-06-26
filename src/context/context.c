@@ -28,15 +28,16 @@ time_t context_get_deadline(const Context* self, GError** err) {
   return iface->get_deadline(self, err);
 }
 
-GCond* context_get_done(const Context* self) {
+GCond* context_get_done(const Context* self, GError** err) {
   ContextInterface* iface;
 
   g_return_val_if_fail(IS_CONTEXT((Context*)self), NULL);
+  g_return_val_if_fail(err == NULL || *err == NULL, NULL);
 
   iface = CONTEXT_GET_INTERFACE((Context*)self);
   g_return_val_if_fail(iface->get_done != NULL, NULL);
 
-  return iface->get_done(self);
+  return iface->get_done(self, err);
 }
 
 void context_cancel(Context* self, GError** err) {

@@ -20,7 +20,7 @@ struct _ContextInterface {
 
   gboolean (*has_deadline)(const Context* self);
   time_t (*get_deadline)(const Context* self, GError** err);
-  GCond* (*get_done)(const Context* self);
+  GCond* (*get_done)(const Context* self, GError** err);
   void (*cancel)(Context* self, GError** err);
   GError* (*get_error)(const Context* self);
   const ValueMap* (*get_valuemap)(const Context* self);
@@ -30,7 +30,7 @@ GType context_get_type(void);
 
 gboolean context_has_deadline(const Context* self);
 time_t context_get_deadline(const Context* self, GError** err);
-GCond* context_get_done(const Context* self);
+GCond* context_get_done(const Context* self, GError** err);
 void context_cancel(Context* self, GError** err);
 GError* context_get_error(const Context* self);
 const ValueMap* context_get_valuemap(const Context* self);
