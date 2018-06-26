@@ -1,29 +1,26 @@
-#include <glib-object.h>
-
-#include "context/error.h"
 #include "context/valuemap.h"
+#include "context/error.h"
 
-GValue* _valuemap_lookup_or_null(const ValueMap* v, const gchar* key);
-GValue* _valuemap_lookup_or_fail(const ValueMap* v, const gchar* key,
-                                 GError** err);
-GValue* _valuemap_lookup_or_create(ValueMap* v, const gchar* key, GType g_type);
-GValue* _valuemap_lookup_sametype(const ValueMap* v, const gchar* key,
-                                  GType g_type, GError** err);
+typedef struct { GHashTable* table; } ContextValueMapPrivate;
 
-ValueMap* valuemap_new() {
-  ValueMap* result;
+G_DEFINE_TYPE_WITH_CODE(ContextValueMap, context_valuemap, G_TYPE_OBJECT,
+                        G_ADD_PRIVATE(ContextValueMap))
 
-  result = g_new(ValueMap, 1);
-  result->table = g_hash_table_new(g_str_hash, g_str_equal);
+static void context_valuemap_init(ContextValueMap* v) {
+  ContextValueMapPrivate* priv;
 
-  return result;
+  priv = context_valuemap_get_instance_private(v);
+  priv->table = g_hash_table_new(g_str_hash, g_str_equal);
 }
 
-void valuemap_destroy(ValueMap* v) {
+static void context_valuemap_finalize(GObject* v) {
+  ContextValueMapPrivate* priv;
   GHashTableIter iter;
   gpointer key, value;
 
-  g_hash_table_iter_init(&iter, v->table);
+  priv = context_valuemap_get_instance_private(CONTEXT_VALUEMAP(v));
+
+  g_hash_table_iter_init(&iter, priv->table);
   while (g_hash_table_iter_next(&iter, &key, &value)) {
     g_hash_table_iter_remove(&iter);
 
@@ -32,22 +29,42 @@ void valuemap_destroy(ValueMap* v) {
     g_free(key);
   }
 
-  g_hash_table_destroy(v->table);
-  g_free(v);
+  g_hash_table_destroy(priv->table);
+
+  G_OBJECT_CLASS(context_valuemap_parent_class)->finalize(v);
 }
 
-gboolean valuemap_contains(const ValueMap* m, const gchar* key) {
+static void context_valuemap_class_init(ContextValueMapClass* klass) {
+  GObjectClass* gobject_class;
+
+  gobject_class = G_OBJECT_CLASS(klass);
+
+  gobject_class->finalize = context_valuemap_finalize;
+}
+
+GValue* _valuemap_lookup_or_null(const ContextValueMap* v, const gchar* key);
+GValue* _valuemap_lookup_or_fail(const ContextValueMap* v, const gchar* key,
+                                 GError** err);
+GValue* _valuemap_lookup_or_create(ContextValueMap* v, const gchar* key,
+                                   GType g_type);
+GValue* _valuemap_lookup_sametype(const ContextValueMap* v, const gchar* key,
+                                  GType g_type, GError** err);
+
+gboolean context_valuemap_contains(const ContextValueMap* m, const gchar* key) {
   return _valuemap_lookup_or_null(m, key) != NULL;
 }
 
-gboolean valuemap_unset(ValueMap* m, const gchar* key) {
+gboolean context_valuemap_unset(ContextValueMap* m, const gchar* key) {
   gpointer value;
   gpointer orig_key;
+  ContextValueMapPrivate* priv;
 
-  if (!g_hash_table_lookup_extended(m->table, key, &orig_key, &value)) {
+  priv = context_valuemap_get_instance_private(m);
+
+  if (!g_hash_table_lookup_extended(priv->table, key, &orig_key, &value)) {
     return FALSE;
   } else {
-    g_hash_table_remove(m->table, key);
+    g_hash_table_remove(priv->table, key);
 
     g_value_unset((GValue*)value);
     g_free(value);
@@ -57,7 +74,8 @@ gboolean valuemap_unset(ValueMap* m, const gchar* key) {
   }
 }
 
-GType valuemap_get_type(const ValueMap* m, const gchar* key, GError** err) {
+GType context_valuemap_get_item_type(const ContextValueMap* m, const gchar* key,
+                                     GError** err) {
   GValue* value;
 
   g_return_val_if_fail(err == NULL || *err == NULL, 0);
@@ -70,7 +88,8 @@ GType valuemap_get_type(const ValueMap* m, const gchar* key, GError** err) {
   return G_VALUE_TYPE(value);
 }
 
-void valuemap_set_boolean(ValueMap* m, const gchar* key, gboolean value) {
+void context_valuemap_set_boolean(ContextValueMap* m, const gchar* key,
+                                  gboolean value) {
   GValue* g_value;
 
   g_value = _valuemap_lookup_or_create(m, key, G_TYPE_BOOLEAN);
@@ -83,8 +102,8 @@ void valuemap_set_boolean(ValueMap* m, const gchar* key, gboolean value) {
   }
 }
 
-gboolean valuemap_get_boolean(const ValueMap* m, const gchar* key,
-                              GError** err) {
+gboolean context_valuemap_get_boolean(const ContextValueMap* m,
+                                      const gchar* key, GError** err) {
   GValue* value;
 
   g_return_val_if_fail(err == NULL || *err == NULL, FALSE);
@@ -97,7 +116,8 @@ gboolean valuemap_get_boolean(const ValueMap* m, const gchar* key,
   return g_value_get_boolean(value);
 }
 
-void valuemap_set_int(ValueMap* m, const gchar* key, gint value) {
+void context_valuemap_set_int(ContextValueMap* m, const gchar* key,
+                              gint value) {
   GValue* g_value;
 
   g_value = _valuemap_lookup_or_create(m, key, G_TYPE_INT);
@@ -110,7 +130,8 @@ void valuemap_set_int(ValueMap* m, const gchar* key, gint value) {
   }
 }
 
-gint valuemap_get_int(const ValueMap* m, const gchar* key, GError** err) {
+gint context_valuemap_get_int(const ContextValueMap* m, const gchar* key,
+                              GError** err) {
   GValue* value;
 
   g_return_val_if_fail(err == NULL || *err == NULL, 0);
@@ -123,7 +144,8 @@ gint valuemap_get_int(const ValueMap* m, const gchar* key, GError** err) {
   return g_value_get_int(value);
 }
 
-void valuemap_set_string(ValueMap* m, const gchar* key, const gchar* value) {
+void context_valuemap_set_string(ContextValueMap* m, const gchar* key,
+                                 const gchar* value) {
   GValue* g_value;
 
   g_value = _valuemap_lookup_or_create(m, key, G_TYPE_STRING);
@@ -136,8 +158,8 @@ void valuemap_set_string(ValueMap* m, const gchar* key, const gchar* value) {
   }
 }
 
-const gchar* valuemap_get_string(const ValueMap* m, const gchar* key,
-                                 GError** err) {
+const gchar* context_valuemap_get_string(const ContextValueMap* m,
+                                         const gchar* key, GError** err) {
   GValue* value;
 
   g_return_val_if_fail(err == NULL || *err == NULL, 0);
@@ -150,7 +172,7 @@ const gchar* valuemap_get_string(const ValueMap* m, const gchar* key,
   return g_value_get_string(value);
 }
 
-GValue* _valuemap_lookup_sametype(const ValueMap* v, const gchar* key,
+GValue* _valuemap_lookup_sametype(const ContextValueMap* v, const gchar* key,
                                   GType g_type, GError** err) {
   GValue* value;
 
@@ -173,21 +195,23 @@ GValue* _valuemap_lookup_sametype(const ValueMap* v, const gchar* key,
   return value;
 }
 
-GValue* _valuemap_lookup_or_create(ValueMap* v, const gchar* key,
+GValue* _valuemap_lookup_or_create(ContextValueMap* v, const gchar* key,
                                    GType g_type) {
   GValue* value;
+  ContextValueMapPrivate* priv;
 
   value = _valuemap_lookup_or_null(v, key);
   if (value == NULL) {
+    priv = context_valuemap_get_instance_private(v);
     value = g_new0(GValue, 1);
     g_value_init(value, g_type);
-    g_hash_table_insert(v->table, g_strdup(key), value);
+    g_hash_table_insert(priv->table, g_strdup(key), value);
   }
 
   return value;
 }
 
-GValue* _valuemap_lookup_or_fail(const ValueMap* v, const gchar* key,
+GValue* _valuemap_lookup_or_fail(const ContextValueMap* v, const gchar* key,
                                  GError** err) {
   GValue* value;
 
@@ -204,6 +228,10 @@ GValue* _valuemap_lookup_or_fail(const ValueMap* v, const gchar* key,
   return value;
 }
 
-GValue* _valuemap_lookup_or_null(const ValueMap* v, const gchar* key) {
-  return (GValue*)g_hash_table_lookup(v->table, key);
+GValue* _valuemap_lookup_or_null(const ContextValueMap* v, const gchar* key) {
+  ContextValueMapPrivate* priv;
+
+  priv = context_valuemap_get_instance_private((ContextValueMap*)v);
+
+  return (GValue*)g_hash_table_lookup(priv->table, key);
 }

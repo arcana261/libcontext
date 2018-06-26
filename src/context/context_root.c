@@ -7,20 +7,18 @@
 
 static void context_root_context_interface_init(ContextInterface* iface);
 
-typedef struct { ValueMap* values; } ContextRootPrivate;
+typedef struct { ContextValueMap* values; } ContextRootPrivate;
 
 G_DEFINE_TYPE_WITH_CODE(
     ContextRoot, context_root, G_TYPE_OBJECT,
     G_IMPLEMENT_INTERFACE(CONTEXT_TYPE, context_root_context_interface_init)
         G_ADD_PRIVATE(ContextRoot))
 
-static void context_root_finalize(GObject* gobject) {
-  ContextRootPrivate* private =
+static void context_root_dispose(GObject* gobject) {
+  ContextRootPrivate* priv =
       context_root_get_instance_private(CONTEXT_ROOT(gobject));
 
-  if (private->values != NULL) {
-    valuemap_destroy(private->values);
-  }
+  g_clear_object(&priv->values);
 
   G_OBJECT_CLASS(context_root_parent_class)->dispose(gobject);
 }
@@ -30,7 +28,7 @@ static void context_root_class_init(ContextRootClass* klass) {
 
   gobject_class = G_OBJECT_CLASS(klass);
 
-  gobject_class->finalize = context_root_finalize;
+  gobject_class->dispose = context_root_dispose;
 }
 
 static void context_root_init(ContextRoot* self) {
@@ -77,18 +75,18 @@ static GError* context_root_get_error(const Context* self) {
   return NULL;
 }
 
-const ValueMap* context_root_get_valuemap(const Context* self) {
+const ContextValueMap* context_root_get_valuemap(const Context* self) {
   ContextRootPrivate* priv;
 
   g_return_val_if_fail(CONTEXT_IS_ROOT((Context*)self), NULL);
 
   priv = context_root_get_instance_private(CONTEXT_ROOT((Context*)self));
 
-  if (private->values == NULL) {
-    priv->values = valuemap_new();
+  if (priv->values == NULL) {
+    priv->values = g_object_new(CONTEXT_TYPE_VALUEMAP, NULL);
   }
 
-  return private->values;
+  return priv->values;
 }
 
 static void context_root_context_interface_init(ContextInterface* iface) {

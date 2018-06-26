@@ -7,304 +7,304 @@
 #include "./config.h"
 
 void test_new(void) {
-  ValueMap* v;
+  ContextValueMap* v;
 
-  v = valuemap_new();
+  v = g_object_new(CONTEXT_TYPE_VALUEMAP, NULL);
   g_assert_nonnull(v);
 
-  valuemap_destroy(v);
+  g_clear_object(&v);
 }
 
 void test_contains_existing(void) {
-  ValueMap* v;
+  ContextValueMap* v;
   gboolean result;
 
-  v = valuemap_new();
+  v = g_object_new(CONTEXT_TYPE_VALUEMAP, NULL);
   g_assert_nonnull(v);
 
-  valuemap_set_int(v, "some-key", 12);
-  result = valuemap_contains(v, "some-key");
+  context_valuemap_set_int(v, "some-key", 12);
+  result = context_valuemap_contains(v, "some-key");
   g_assert_true(result);
 
-  valuemap_destroy(v);
+  g_clear_object(&v);
 }
 
 void test_contains_nonexisting(void) {
-  ValueMap* v;
+  ContextValueMap* v;
   gboolean result;
 
-  v = valuemap_new();
+  v = g_object_new(CONTEXT_TYPE_VALUEMAP, NULL);
   g_assert_nonnull(v);
 
-  result = valuemap_contains(v, "some-key");
+  result = context_valuemap_contains(v, "some-key");
   g_assert_false(result);
 
-  valuemap_destroy(v);
+  g_clear_object(&v);
 }
 
 void test_unset_existing(void) {
-  ValueMap* v;
+  ContextValueMap* v;
   gboolean result;
 
-  v = valuemap_new();
+  v = g_object_new(CONTEXT_TYPE_VALUEMAP, NULL);
   g_assert_nonnull(v);
 
-  valuemap_set_int(v, "some-key", 12);
-  result = valuemap_unset(v, "some-key");
+  context_valuemap_set_int(v, "some-key", 12);
+  result = context_valuemap_unset(v, "some-key");
   g_assert_true(result);
-  result = valuemap_contains(v, "some-key");
+  result = context_valuemap_contains(v, "some-key");
   g_assert_false(result);
 
-  valuemap_destroy(v);
+  g_clear_object(&v);
 }
 
 void test_unset_nonexisting(void) {
-  ValueMap* v;
+  ContextValueMap* v;
   gboolean result;
 
-  v = valuemap_new();
+  v = g_object_new(CONTEXT_TYPE_VALUEMAP, NULL);
   g_assert_nonnull(v);
 
-  result = valuemap_unset(v, "some-key");
+  result = context_valuemap_unset(v, "some-key");
   g_assert_false(result);
 
-  valuemap_destroy(v);
+  g_clear_object(&v);
 }
 
 void test_int(void) {
-  ValueMap* v;
+  ContextValueMap* v;
   gint result;
   GError* err = NULL;
 
-  v = valuemap_new();
+  v = g_object_new(CONTEXT_TYPE_VALUEMAP, NULL);
   g_assert_nonnull(v);
 
-  valuemap_set_int(v, "some-key", 12);
-  result = valuemap_get_int(v, "some-key", &err);
+  context_valuemap_set_int(v, "some-key", 12);
+  result = context_valuemap_get_int(v, "some-key", &err);
   g_assert_no_error(err);
   g_assert_cmpint(result, ==, 12);
 
-  valuemap_destroy(v);
+  g_clear_object(&v);
 }
 
 void test_int_override(void) {
-  ValueMap* v;
+  ContextValueMap* v;
   gint result;
   GError* err = NULL;
 
-  v = valuemap_new();
+  v = g_object_new(CONTEXT_TYPE_VALUEMAP, NULL);
   g_assert_nonnull(v);
 
-  valuemap_set_string(v, "some-key", "some-value");
-  valuemap_set_int(v, "some-key", 15);
-  result = valuemap_get_int(v, "some-key", &err);
+  context_valuemap_set_string(v, "some-key", "some-value");
+  context_valuemap_set_int(v, "some-key", 15);
+  result = context_valuemap_get_int(v, "some-key", &err);
   g_assert_no_error(err);
   g_assert_cmpint(result, ==, 15);
 
-  valuemap_destroy(v);
+  g_clear_object(&v);
 }
 
 void test_key_ownership(void) {
-  ValueMap* v;
+  ContextValueMap* v;
   gchar* input;
   gboolean result;
 
   input = g_strdup("some-key");
-  v = valuemap_new();
+  v = g_object_new(CONTEXT_TYPE_VALUEMAP, NULL);
   g_assert_nonnull(v);
-  valuemap_set_int(v, input, 12);
+  context_valuemap_set_int(v, input, 12);
   *input = 'Q';
-  result = valuemap_contains(v, input);
+  result = context_valuemap_contains(v, input);
   g_assert_false(result);
-  result = valuemap_contains(v, "some-key");
+  result = context_valuemap_contains(v, "some-key");
   g_assert_true(result);
 
   g_free(input);
-  valuemap_destroy(v);
+  g_clear_object(&v);
 }
 
 void test_string(void) {
-  ValueMap* v;
+  ContextValueMap* v;
   const gchar* result;
   GError* err = NULL;
 
-  v = valuemap_new();
+  v = g_object_new(CONTEXT_TYPE_VALUEMAP, NULL);
   g_assert_nonnull(v);
 
-  valuemap_set_string(v, "some-key", "some-value");
-  result = valuemap_get_string(v, "some-key", &err);
+  context_valuemap_set_string(v, "some-key", "some-value");
+  result = context_valuemap_get_string(v, "some-key", &err);
   g_assert_no_error(err);
   g_assert_cmpstr(result, ==, "some-value");
 
-  valuemap_destroy(v);
+  g_clear_object(&v);
 }
 
 void test_string_override(void) {
-  ValueMap* v;
+  ContextValueMap* v;
   const gchar* result;
   GError* err = NULL;
 
-  v = valuemap_new();
+  v = g_object_new(CONTEXT_TYPE_VALUEMAP, NULL);
   g_assert_nonnull(v);
 
-  valuemap_set_int(v, "some-key", 15);
-  valuemap_set_string(v, "some-key", "some-value");
-  result = valuemap_get_string(v, "some-key", &err);
+  context_valuemap_set_int(v, "some-key", 15);
+  context_valuemap_set_string(v, "some-key", "some-value");
+  result = context_valuemap_get_string(v, "some-key", &err);
   g_assert_no_error(err);
   g_assert_cmpstr(result, ==, "some-value");
 
-  valuemap_destroy(v);
+  g_clear_object(&v);
 }
 
 void test_string_should_fail_for_nonexisting_key(void) {
-  ValueMap* v;
+  ContextValueMap* v;
   GError* err = NULL;
 
-  v = valuemap_new();
+  v = g_object_new(CONTEXT_TYPE_VALUEMAP, NULL);
   g_assert_nonnull(v);
 
-  valuemap_get_string(v, "some-key", &err);
+  context_valuemap_get_string(v, "some-key", &err);
   g_assert_error(err, CONTEXT_ERROR, CONTEXT_ERROR_KEY_NOT_FOUND);
 
-  valuemap_destroy(v);
+  g_clear_object(&v);
 }
 
 void test_string_ownership(void) {
-  ValueMap* v;
+  ContextValueMap* v;
   const gchar* result;
   GError* err = NULL;
   gchar* input;
 
   input = g_strdup("some-value");
-  v = valuemap_new();
+  v = g_object_new(CONTEXT_TYPE_VALUEMAP, NULL);
   g_assert_nonnull(v);
 
-  valuemap_set_string(v, "some-key", input);
+  context_valuemap_set_string(v, "some-key", input);
   *input = 'Q';
-  result = valuemap_get_string(v, "some-key", &err);
+  result = context_valuemap_get_string(v, "some-key", &err);
   g_assert_no_error(err);
   g_assert_cmpstr(result, ==, "some-value");
 
   g_free(input);
-  valuemap_destroy(v);
+  g_clear_object(&v);
 }
 
 void test_get_type_int(void) {
-  ValueMap* v;
+  ContextValueMap* v;
   GType value;
   GError* err = NULL;
 
-  v = valuemap_new();
+  v = g_object_new(CONTEXT_TYPE_VALUEMAP, NULL);
   g_assert_nonnull(v);
 
-  valuemap_set_int(v, "some-key", 15);
-  value = valuemap_get_type(v, "some-key", &err);
+  context_valuemap_set_int(v, "some-key", 15);
+  value = context_valuemap_get_item_type(v, "some-key", &err);
   g_assert_no_error(err);
   g_assert_true(value == G_TYPE_INT);
 
-  valuemap_destroy(v);
+  g_clear_object(&v);
 }
 
 void test_get_type_string(void) {
-  ValueMap* v;
+  ContextValueMap* v;
   GType value;
   GError* err = NULL;
 
-  v = valuemap_new();
+  v = g_object_new(CONTEXT_TYPE_VALUEMAP, NULL);
   g_assert_nonnull(v);
 
-  valuemap_set_string(v, "some-key", "some-value");
-  value = valuemap_get_type(v, "some-key", &err);
+  context_valuemap_set_string(v, "some-key", "some-value");
+  value = context_valuemap_get_item_type(v, "some-key", &err);
   g_assert_no_error(err);
   g_assert_true(value == G_TYPE_STRING);
 
-  valuemap_destroy(v);
+  g_clear_object(&v);
 }
 
 void test_get_type_should_return_error_nonexisting_key(void) {
-  ValueMap* v;
+  ContextValueMap* v;
   GError* err = NULL;
 
-  v = valuemap_new();
+  v = g_object_new(CONTEXT_TYPE_VALUEMAP, NULL);
   g_assert_nonnull(v);
 
-  valuemap_get_type(v, "some-key", &err);
+  context_valuemap_get_item_type(v, "some-key", &err);
   g_assert_error(err, CONTEXT_ERROR, CONTEXT_ERROR_KEY_NOT_FOUND);
 
-  valuemap_destroy(v);
+  g_clear_object(&v);
 }
 
 void test_boolean(void) {
-  ValueMap* v;
+  ContextValueMap* v;
   GError* err = NULL;
   gboolean result;
 
-  v = valuemap_new();
+  v = g_object_new(CONTEXT_TYPE_VALUEMAP, NULL);
   g_assert_nonnull(v);
 
-  valuemap_set_boolean(v, "some-key", TRUE);
-  result = valuemap_get_boolean(v, "some-key", &err);
+  context_valuemap_set_boolean(v, "some-key", TRUE);
+  result = context_valuemap_get_boolean(v, "some-key", &err);
   g_assert_no_error(err);
   g_assert_cmpint(result, ==, TRUE);
 
-  valuemap_destroy(v);
+  g_clear_object(&v);
 }
 
 void test_set_boolean_override(void) {
-  ValueMap* v;
+  ContextValueMap* v;
   GError* err = NULL;
   gboolean result;
 
-  v = valuemap_new();
+  v = g_object_new(CONTEXT_TYPE_VALUEMAP, NULL);
   g_assert_nonnull(v);
 
-  valuemap_set_string(v, "some-key", "some-value");
-  valuemap_set_boolean(v, "some-key", TRUE);
-  result = valuemap_get_boolean(v, "some-key", &err);
+  context_valuemap_set_string(v, "some-key", "some-value");
+  context_valuemap_set_boolean(v, "some-key", TRUE);
+  result = context_valuemap_get_boolean(v, "some-key", &err);
   g_assert_no_error(err);
   g_assert_cmpint(result, ==, TRUE);
 
-  valuemap_destroy(v);
+  g_clear_object(&v);
 }
 
 void test_set_boolean_should_fail_for_nonexisting_key(void) {
-  ValueMap* v;
+  ContextValueMap* v;
   GError* err = NULL;
 
-  v = valuemap_new();
+  v = g_object_new(CONTEXT_TYPE_VALUEMAP, NULL);
   g_assert_nonnull(v);
 
-  valuemap_get_boolean(v, "some-key", &err);
+  context_valuemap_get_boolean(v, "some-key", &err);
   g_assert_error(err, CONTEXT_ERROR, CONTEXT_ERROR_KEY_NOT_FOUND);
 
-  valuemap_destroy(v);
+  g_clear_object(&v);
 }
 
 void test_get_int_should_fail_for_nonexisting_key(void) {
-  ValueMap* v;
+  ContextValueMap* v;
   GError* err = NULL;
 
-  v = valuemap_new();
+  v = g_object_new(CONTEXT_TYPE_VALUEMAP, NULL);
   g_assert_nonnull(v);
 
-  valuemap_get_int(v, "some-key", &err);
+  context_valuemap_get_int(v, "some-key", &err);
   g_assert_error(err, CONTEXT_ERROR, CONTEXT_ERROR_KEY_NOT_FOUND);
 
-  valuemap_destroy(v);
+  g_clear_object(&v);
 }
 
 void test_get_int_should_fail_for_incompatible_type(void) {
-  ValueMap* v;
+  ContextValueMap* v;
   GError* err = NULL;
 
-  v = valuemap_new();
+  v = g_object_new(CONTEXT_TYPE_VALUEMAP, NULL);
   g_assert_nonnull(v);
 
-  valuemap_set_string(v, "some-key", "some-value");
-  valuemap_get_int(v, "some-key", &err);
+  context_valuemap_set_string(v, "some-key", "some-value");
+  context_valuemap_get_int(v, "some-key", &err);
   g_assert_error(err, CONTEXT_ERROR, CONTEXT_ERROR_INVALID_TYPE);
 
-  valuemap_destroy(v);
+  g_clear_object(&v);
 }
 
 int main(int argc, char* argv[]) {

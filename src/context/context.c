@@ -63,7 +63,7 @@ GError* context_get_error(const Context* self) {
   return iface->get_error(self);
 }
 
-const ValueMap* context_get_valuemap(const Context* self) {
+const ContextValueMap* context_get_valuemap(const Context* self) {
   ContextInterface* iface;
 
   g_return_val_if_fail(IS_CONTEXT((Context*)self), NULL);
