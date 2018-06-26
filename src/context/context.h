@@ -7,9 +7,10 @@
 #include "context/valuemap.h"
 
 #define CONTEXT_TYPE context_get_type()
-#define CONTEXT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), CONTEXT_TYPE, Context))
-#define IS_CONTEXT(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), CONTEXT_TYPE))
-#define CONETXT_GET_INTERFACE(inst) (G_TYPE_CHECK_GET_INTERFACE ((inst), CONTEXT_TYPE, ContextInterface))
+#define CONTEXT(obj) (G_TYPE_CHECK_INSTANCE_CAST((obj), CONTEXT_TYPE, Context))
+#define IS_CONTEXT(obj) (G_TYPE_CHECK_INSTANCE_TYPE((obj), CONTEXT_TYPE))
+#define CONTEXT_GET_INTERFACE(inst) \
+  (G_TYPE_INSTANCE_GET_INTERFACE((inst), CONTEXT_TYPE, ContextInterface))
 
 typedef struct _Context Context;
 typedef struct _ContextInterface ContextInterface;

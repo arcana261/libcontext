@@ -5,8 +5,7 @@ static void context_root_context_interface_init(ContextInterface* iface);
 
 G_DEFINE_TYPE_WITH_CODE(
     ContextRoot, context_root, G_TYPE_OBJECT,
-    G_IMPLEMENT_INTERFACE(CONTEXT_TYPE,
-                          context_root_context_interface_init))
+    G_IMPLEMENT_INTERFACE(CONTEXT_TYPE, context_root_context_interface_init))
 
 static void context_root_class_init(ContextRootClass* klass) {}
 
