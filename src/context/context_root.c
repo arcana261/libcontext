@@ -1,23 +1,22 @@
 #include <time.h>
 
+#include "./error.h"
 #include "context/context.h"
 #include "context/context_root.h"
-#include "error.h"
 #include "context/valuemap.h"
 
 static void context_root_context_interface_init(ContextInterface* iface);
 
-typedef struct {
-  ValueMap* values;
-} ContextRootPrivate;
+typedef struct { ValueMap* values; } ContextRootPrivate;
 
 G_DEFINE_TYPE_WITH_CODE(
     ContextRoot, context_root, G_TYPE_OBJECT,
     G_IMPLEMENT_INTERFACE(CONTEXT_TYPE, context_root_context_interface_init)
-    G_ADD_PRIVATE(ContextRoot))
+        G_ADD_PRIVATE(ContextRoot))
 
 static void context_root_finalize(GObject* gobject) {
-  ContextRootPrivate* private = context_root_get_instance_private(CONTEXT_ROOT(gobject));
+  ContextRootPrivate* private =
+      context_root_get_instance_private(CONTEXT_ROOT(gobject));
 
   if (private->values != NULL) {
     valuemap_destroy(private->values);
@@ -27,7 +26,7 @@ static void context_root_finalize(GObject* gobject) {
 }
 
 static void context_root_class_init(ContextRootClass* klass) {
-  GObjectClass *gobject_class;
+  GObjectClass* gobject_class;
 
   gobject_class = G_OBJECT_CLASS(klass);
 
@@ -35,13 +34,14 @@ static void context_root_class_init(ContextRootClass* klass) {
 }
 
 static void context_root_init(ContextRoot* self) {
-  ContextRootPrivate* private = context_root_get_instance_private(self);
-  private->values = NULL;
+  ContextRootPrivate* priv;
+  priv = context_root_get_instance_private(self);
+
+  priv->values = NULL;
 }
 
 static gboolean context_root_has_deadline(const Context* self) {
   g_return_val_if_fail(CONTEXT_IS_ROOT((Context*)self), FALSE);
-
   return FALSE;
 }
 
@@ -78,14 +78,14 @@ static GError* context_root_get_error(const Context* self) {
 }
 
 const ValueMap* context_root_get_valuemap(const Context* self) {
-  ContextRootPrivate* private;
+  ContextRootPrivate* priv;
 
   g_return_val_if_fail(CONTEXT_IS_ROOT((Context*)self), NULL);
 
-  private = context_root_get_instance_private(CONTEXT_ROOT((Context*)self));
-  
+  priv = context_root_get_instance_private(CONTEXT_ROOT((Context*)self));
+
   if (private->values == NULL) {
-    private->values = valuemap_new();
+    priv->values = valuemap_new();
   }
 
   return private->values;
