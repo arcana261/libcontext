@@ -1,9 +1,10 @@
 #include "context/context.h"
 #include "context/context_root.h"
 
-G_DEFINE_INTERFACE(Context, context, G_TYPE_OBJECT)
+G_DEFINE_INTERFACE(Context, context, 0)
 
-static void context_default_init(ContextInterface* iface) {}
+static void context_default_init(ContextInterface* iface) {
+}
 
 gboolean context_has_deadline(const Context* self) {
   ContextInterface* iface;
@@ -74,5 +75,8 @@ const ValueMap* context_get_valuemap(const Context* self) {
 }
 
 Context* context_background(void) {
-  return CONTEXT_CONTEXT(context_root_new());
+  ContextRoot* result;
+
+  result = g_object_new(CONTEXT_TYPE_ROOT, NULL);
+  return CONTEXT(result);
 }

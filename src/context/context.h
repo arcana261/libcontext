@@ -6,9 +6,14 @@
 
 #include "context/valuemap.h"
 
-G_BEGIN_DECLS
+#define CONTEXT_TYPE context_get_type()
+#define CONTEXT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), CONTEXT_TYPE, Context))
+#define IS_CONTEXT(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), CONTEXT_TYPE))
+#define CONETXT_GET_INTERFACE(inst) (G_TYPE_CHECK_GET_INTERFACE ((inst), CONTEXT_TYPE, ContextInterface))
 
-#define CONTEXT_TYPE_CONTEXT context_get_type()
+typedef struct _Context Context;
+typedef struct _ContextInterface ContextInterface;
+
 G_DECLARE_INTERFACE(Context, context, CONTEXT, CONTEXT, GObject)
 
 struct _ContextInterface {
@@ -21,6 +26,8 @@ struct _ContextInterface {
   GError* (*get_error)(const Context* self);
   const ValueMap* (*get_valuemap)(const Context* self);
 };
+
+GType context_get_type(void);
 
 gboolean context_has_deadline(const Context* self);
 time_t context_get_deadline(const Context* self, GError** err);
@@ -35,7 +42,5 @@ Context* context_withcancel(const Context* parent);
 Context* context_withdeadline(const Context* parent, time_t deadline);
 Context* context_withtimeout(const Context* parent, time_t duration);
 Context* context_withvaluemap(const Context* parent, const ValueMap* valuemap);
-
-G_END_DECLS
 
 #endif  // CONTEXT_CONTEXT_H_
