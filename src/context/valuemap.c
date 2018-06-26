@@ -3,11 +3,12 @@
 #include "context/error.h"
 #include "context/valuemap.h"
 
-GValue* _valuemap_lookup_or_null(ValueMap* v, const gchar* key);
-GValue* _valuemap_lookup_or_fail(ValueMap* v, const gchar* key, GError** err);
+GValue* _valuemap_lookup_or_null(const ValueMap* v, const gchar* key);
+GValue* _valuemap_lookup_or_fail(const ValueMap* v, const gchar* key,
+                                 GError** err);
 GValue* _valuemap_lookup_or_create(ValueMap* v, const gchar* key, GType g_type);
-GValue* _valuemap_lookup_sametype(ValueMap* v, const gchar* key, GType g_type,
-                                  GError** err);
+GValue* _valuemap_lookup_sametype(const ValueMap* v, const gchar* key,
+                                  GType g_type, GError** err);
 
 ValueMap* valuemap_new() {
   ValueMap* result;
@@ -35,7 +36,7 @@ void valuemap_destroy(ValueMap* v) {
   g_free(v);
 }
 
-gboolean valuemap_contains(ValueMap* m, const gchar* key) {
+gboolean valuemap_contains(const ValueMap* m, const gchar* key) {
   return _valuemap_lookup_or_null(m, key) != NULL;
 }
 
@@ -56,7 +57,7 @@ gboolean valuemap_unset(ValueMap* m, const gchar* key) {
   }
 }
 
-GType valuemap_get_type(ValueMap* m, const gchar* key, GError** err) {
+GType valuemap_get_type(const ValueMap* m, const gchar* key, GError** err) {
   GValue* value;
 
   g_return_val_if_fail(err == NULL || *err == NULL, 0);
@@ -82,7 +83,8 @@ void valuemap_set_boolean(ValueMap* m, const gchar* key, gboolean value) {
   }
 }
 
-gboolean valuemap_get_boolean(ValueMap* m, const gchar* key, GError** err) {
+gboolean valuemap_get_boolean(const ValueMap* m, const gchar* key,
+                              GError** err) {
   GValue* value;
 
   g_return_val_if_fail(err == NULL || *err == NULL, FALSE);
@@ -108,7 +110,7 @@ void valuemap_set_int(ValueMap* m, const gchar* key, gint value) {
   }
 }
 
-gint valuemap_get_int(ValueMap* m, const gchar* key, GError** err) {
+gint valuemap_get_int(const ValueMap* m, const gchar* key, GError** err) {
   GValue* value;
 
   g_return_val_if_fail(err == NULL || *err == NULL, 0);
@@ -134,7 +136,8 @@ void valuemap_set_string(ValueMap* m, const gchar* key, const gchar* value) {
   }
 }
 
-const gchar* valuemap_get_string(ValueMap* m, const gchar* key, GError** err) {
+const gchar* valuemap_get_string(const ValueMap* m, const gchar* key,
+                                 GError** err) {
   GValue* value;
 
   g_return_val_if_fail(err == NULL || *err == NULL, 0);
@@ -147,8 +150,8 @@ const gchar* valuemap_get_string(ValueMap* m, const gchar* key, GError** err) {
   return g_value_get_string(value);
 }
 
-GValue* _valuemap_lookup_sametype(ValueMap* v, const gchar* key, GType g_type,
-                                  GError** err) {
+GValue* _valuemap_lookup_sametype(const ValueMap* v, const gchar* key,
+                                  GType g_type, GError** err) {
   GValue* value;
 
   g_return_val_if_fail(err == NULL || *err == NULL, NULL);
@@ -184,7 +187,8 @@ GValue* _valuemap_lookup_or_create(ValueMap* v, const gchar* key,
   return value;
 }
 
-GValue* _valuemap_lookup_or_fail(ValueMap* v, const gchar* key, GError** err) {
+GValue* _valuemap_lookup_or_fail(const ValueMap* v, const gchar* key,
+                                 GError** err) {
   GValue* value;
 
   g_return_val_if_fail(err == NULL || *err == NULL, NULL);
@@ -200,6 +204,6 @@ GValue* _valuemap_lookup_or_fail(ValueMap* v, const gchar* key, GError** err) {
   return value;
 }
 
-GValue* _valuemap_lookup_or_null(ValueMap* v, const gchar* key) {
+GValue* _valuemap_lookup_or_null(const ValueMap* v, const gchar* key) {
   return (GValue*)g_hash_table_lookup(v->table, key);
 }
