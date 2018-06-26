@@ -15,8 +15,6 @@
 typedef struct _Context Context;
 typedef struct _ContextInterface ContextInterface;
 
-G_DECLARE_INTERFACE(Context, context, CONTEXT, CONTEXT, GObject)
-
 struct _ContextInterface {
   GTypeInterface parent_iface;
 
